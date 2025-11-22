@@ -145,4 +145,35 @@ public class TimetableTest {
         assertEquals(1, counts.size(), "Ожидается один тренер после суммирования идентичных объектов");
         assertEquals(3, counts.get(0).getCount(), "Ожидается 3 занятия у тренера");
     }
+
+    // --- ТЕСТ на две тренировки в одно время
+    @Test
+    void testMultipleSessionsSameTime() {
+        Timetable timetable = new Timetable();
+
+        Coach coach1 = new Coach("Иванов", "И", "И");
+        Coach coach2 = new Coach("Петров", "П", "П");
+
+        Group g1 = new Group("Йога", Age.ADULT, 60);
+        Group g2 = new Group("Пилатес", Age.ADULT, 50);
+
+        TimeOfDay t = new TimeOfDay(18, 0);
+
+        TrainingSession s1 = new TrainingSession(g1, coach1, DayOfWeek.FRIDAY, t);
+        TrainingSession s2 = new TrainingSession(g2, coach2, DayOfWeek.FRIDAY, t);
+
+        // Добавляем в порядок: сначала s1, затем s2
+        timetable.addNewTrainingSession(s1);
+        timetable.addNewTrainingSession(s2);
+
+        List<TrainingSession> sessions =
+                timetable.getTrainingSessionsForDayAndTime(DayOfWeek.FRIDAY, t);
+
+        assertNotNull(sessions);
+        assertEquals(2, sessions.size(), "Ожидается 2 тренировки в одно время");
+
+        // Проверяем порядок, как в остальных тестах
+        assertEquals(s1, sessions.get(0), "Первой должна быть первая добавленная тренировка");
+        assertEquals(s2, sessions.get(1), "Второй должна быть вторая добавленная тренировка");
+    }
 }

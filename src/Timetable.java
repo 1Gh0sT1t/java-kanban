@@ -44,11 +44,18 @@ public class Timetable {
     public List<TrainingSession> getTrainingSessionsForDayAndTime(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
         Objects.requireNonNull(dayOfWeek, "dayOfWeek == null");
         Objects.requireNonNull(timeOfDay, "timeOfDay == null");
+
         TreeMap<TimeOfDay, List<TrainingSession>> dayMap = timetable.get(dayOfWeek);
-        if (dayMap == null) return Collections.emptyList();
+        if (dayMap == null) { // Добавил фигурные скобки
+            return Collections.emptyList();
+        }
+
         List<TrainingSession> list = dayMap.get(timeOfDay);
-        if (list == null || list.isEmpty()) return Collections.emptyList();
-        return Collections.unmodifiableList(new ArrayList<>(list));
+        if (list == null || list.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return List.copyOf(list);
     }
 
     //Подсчитывает количество занятий в неделю для каждого тренера и возвращает список CounterOfTrainings,
